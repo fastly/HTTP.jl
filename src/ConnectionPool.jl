@@ -453,32 +453,21 @@ function getconnection(::Type{SSLContext},
     return sslconnection(tcp, host; kw...)
 end
 
-function getconnection(::Type{OpenSSL.SSLContext},
-                        host::AbstractString,
-                        port::AbstractString;
-                        ssl_context::OpenSSL.SSLContext,
-                        kw...)::SSLStream
-
-    port = isempty(port) ? "443" : port
-    @debugv 2 "OpenSSL connect: $host:$port..."
-    tcp = getconnection(TCPSocket, host, port; kw...)
-    # Create SSL stream.
-    ssl_stream = SSLStream(ssl_context, tcp)
-    OpenSSL.hostname!(ssl_stream, host)
-    OpenSSL.connect(ssl_stream)
-    return ssl_stream
-end
-
 function getconnection(::Type{SSLStream},
                         host::AbstractString,
                         port::AbstractString;
+                        ssl_context::OpenSSL.SSLContext=nothing,,
                         kw...)::SSLStream
 
     port = isempty(port) ? "443" : port
     @debugv 2 "OpenSSL connect: $host:$port..."
     tcp = getconnection(TCPSocket, host, port; kw...)
     # Create SSL stream.
-    ssl_stream = SSLStream(tcp)
+    if ssl_context === nothing
+        ssl_stream = SSLStream(tcp)
+    else
+        ssl_stream = SSLStream(ssl_context, tcp)
+    end
     OpenSSL.hostname!(ssl_stream, host)
     OpenSSL.connect(ssl_stream)
     return ssl_stream
