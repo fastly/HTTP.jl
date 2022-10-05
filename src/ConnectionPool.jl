@@ -456,7 +456,7 @@ end
 function getconnection(::Type{SSLStream},
                         host::AbstractString,
                         port::AbstractString;
-                        ssl_context::OpenSSL.SSLContext=nothing,,
+                        ssl_context::OpenSSL.SSLContext=nothing,
                         kw...)::SSLStream
 
     port = isempty(port) ? "443" : port
