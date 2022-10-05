@@ -464,8 +464,10 @@ function getconnection(::Type{SSLStream},
     tcp = getconnection(TCPSocket, host, port; kw...)
     # Create SSL stream.
     if ssl_context === nothing
+        @info "no SSL context passed"
         ssl_stream = SSLStream(tcp)
     else
+        @info "SSL context WAS passed"
         ssl_stream = SSLStream(ssl_context, tcp, tcp)
     end
     OpenSSL.hostname!(ssl_stream, host)
