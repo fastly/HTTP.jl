@@ -466,7 +466,7 @@ function getconnection(::Type{SSLStream},
     if ssl_context === nothing
         ssl_stream = SSLStream(tcp)
     else
-        ssl_stream = SSLStream(ssl_context, tcp)
+        ssl_stream = SSLStream(ssl_context, tcp, tcp)
     end
     OpenSSL.hostname!(ssl_stream, host)
     OpenSSL.connect(ssl_stream)
